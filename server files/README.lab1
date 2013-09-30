@@ -3,6 +3,8 @@
 // Personuppgifter (namn, pnr, epost) på dem som gjort labben
 //
 
+Lucas Wiener, 9111234259, lwiener@kth.se
+Mathias Lindblom, 8906050011, mathlin@kth.se
 
 /////////////////////////////////////////////////////////////////
 //
@@ -10,9 +12,13 @@
 //
 // vad betyder \$* i en makefile? 
 
+Tecknet \ använder man för att stycka upp kod på flera rader, så i detta fall gör det ingenting.
+Vanligtvis använder man tecknet sist i rader för att skapa ett kommando som är på flera rader.
+I en implicit regel (med %) så är $* det som matchades av %.
 
 // vad gör -Wall och -g ?
 
+Säger åt kompilatorn att rapportera alla varningar och att 
 
 /////////////////////////////////////////////////////////////////
 //
