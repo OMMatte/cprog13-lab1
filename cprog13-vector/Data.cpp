@@ -9,9 +9,11 @@ Data ** foo(Data ** v, int x) {
     return v;
 }
 
+/*
 int main () {
     const int size = 5;
     Data ** v = new Data * [size];
     foo(v, size);
     delete [] v;
 }
+*/
