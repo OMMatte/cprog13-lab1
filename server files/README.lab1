@@ -196,22 +196,31 @@ cprog13-vector(85819) malloc: *** error for object 0x1001000e8: pointer being fr
 
 // När frigörs objekten?  
 
+När de är out-of-scope, förutom för de dynamiskt allokerade objekten.
 
 // När skapas temporära objekt?
+
+När funktioners parametrar är copy-by-value.
 
 //   A b = a;         // vad är skillnaden
 //   A c(a);          // mellan dessa
 //   A d;             // tre tekniker?
 
+De två första kommer använda copy constructor. Den sista kommer använda
+default constructor. De två första skapas utifrån objekt a.
 
 //   no_ref(a);       // Bildas temporära objekt?
 
+Ja.
 
 //   with_ref(a);     // Bildas temporära objekt?
 
+Nej.
 
 //   delete aa;       // Vad kommer att hända
 
+Programmet kommer att krascha, eftersom att göra delete på en array
+är odefinierat beteende. delete[] ska användas istället.
 
 /////////////////////////////////////////////////////////////////
 //
@@ -235,16 +244,40 @@ cprog13-vector(85819) malloc: *** error for object 0x1001000e8: pointer being fr
 
 // Hur ser valgrinds felmeddelande ut?  
 
+==92627== Conditional jump or move depends on uninitialised value(s)
+==92627==    at 0x100000E82: foo(Data**, int) (Data.cpp:7)
+==92627==    by 0x100000EFF: main (Data.cpp:15)
 
 // Blir det någon skillnad i hur mycket minne som läcker när man
 // kommenterar if-satsen?
 
+==92627== LEAK SUMMARY:
+==92627==    definitely lost: 8,664 bytes in 15 blocks
+==92627==    indirectly lost: 1,168 bytes in 5 blocks
+==92627==      possibly lost: 4,837 bytes in 56 blocks
+==92627==    still reachable: 43,831 bytes in 273 blocks
+==92627==         suppressed: 0 bytes in 0 blocks
+
+mot
+
+==92652== LEAK SUMMARY:
+==92652==    definitely lost: 8,664 bytes in 15 blocks
+==92652==    indirectly lost: 1,228 bytes in 10 blocks
+==92652==      possibly lost: 4,837 bytes in 56 blocks
+==92652==    still reachable: 43,831 bytes in 273 blocks
+==92652==         suppressed: 0 bytes in 0 blocks
 
 // Borde det ha blivit någon skillnad?
 
+Ja, eftersom vi då skapar 5 Data objekt i arrayen, vilket inte
+görs då if-satsen är aktiv. Eftersom en Data är 12 bytes, så kommer
+andra versionen att läcka 5*12=60 bytes mer.
 
 // Varför läcker programmet fortfarande minne?
 
+För att med if-satsen bortkommenterad så skapas 5 objekt i arrayen
+som aldrig frigörs. Vi måste gå igenom hela arrayen och frigöra objekten
+som skapas och sedan frigöra arrayen.
 
 /////////////////////////////////////////////////////////////////
 //
