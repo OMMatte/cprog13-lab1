@@ -18,7 +18,7 @@ I en implicit regel (med %) så är $* det som matchades av %.
 
 // vad gör -Wall och -g ?
 
-Säger åt kompilatorn att rapportera alla varningar och att 
+Säger åt kompilatorn att rapportera alla varningar och att generera debuginformation.
 
 /////////////////////////////////////////////////////////////////
 //
@@ -50,9 +50,15 @@ Säger åt kompilatorn att rapportera alla varningar och att
 // 
 // Varför blir värdet på variabeln w inte det man tror (0.29*100)? 
 
+Floats arbetar ej med exakta värden, vilket betyder att z skulle kunna vara
+0.2899999... istället för exakt 0.2900000... Då när man gör beräkningen z*x*x så
+kommer det då få värdet 28.999999. Decimalerna försvinner när värdet görs om till en
+integer, så det slutgiltiga värdet blir då 28.
 
 // Hur många varv körs for-loopen i funktionen powerof? 
 
+For-loopen kommer köras y gånger. Notera dock att loopens kropp är tom,
+vilket betyder att res *= x endast kommer köras en gång (vilket inte är loopens kropp).
 
 // 1.2 b)
 //
@@ -67,9 +73,30 @@ Säger åt kompilatorn att rapportera alla varningar och att
 // 
 // Dina tre testfall
 
+void test2( void ) {
+    char test[] = {'b', 'a', 'n', 'a', 'n' };
+    int result = must_follow_a(test, 4, 'a', 'n');
+    TS_ASSERT_EQUALS(result, 0);
+}
+
+void test3( void ) {
+    char test[] = { 'H', 'A', 'N', 'A', ' ', 'B', 'A', 'N', 'A', 'N', 'A', 'N' };
+    int result = must_follow_a(test, strlen(test), 'A', 'N');
+    TS_ASSERT_EQUALS(result, 4);
+}
+
+void test4( void ) {
+    char test[] = { 'h', 'a', 'b', 'A', 'n', 'A', ' ', 'n', 'a', 'b', 'a', 'N' };
+    int result = must_follow_a(test, strlen(test), 'n', 'A');
+    TS_ASSERT_EQUALS(result, 1);
+}
 
 // Varför är det så viktigt att testa randvillkoren?
 
+Det är viktigt eftersom det är där funktionen har en bugg. Funktionen
+tittar på ett extra tecken efter det givna datats längd, så det är 
+om testdatat slutar på a men är följt av ett b, så kommer funktionen
+att returnera fel värde.
 
 /////////////////////////////////////////////////////////////////
 //
@@ -77,9 +104,95 @@ Säger åt kompilatorn att rapportera alla varningar och att
 // 
 // Bifoga källkoden till din version av A.cpp
 
+#include <iostream>
+
+class A {
+public:
+    A() {
+        std::cout << "The default contructor" << std::endl;
+    }
+    
+    A(const A & ref) {
+        std::cout << "The copy contructor" << std::endl;
+    }
+    
+    ~A() {
+        std::cout << "The destructor" << std::endl;
+    }
+    
+    A(char * s) {
+        std::cout << "Some other constructor " << s << std::endl;
+    }
+    
+    A & operator=(const A & s) {
+        std::cout << "The assignment operator" << std::endl;
+        return *this;
+    }
+};
+
+void no_ref(A a) {}
+void with_ref(const A & a) {}
+
+int main()
+{
+    std::cout << "test 1" << std::endl;
+    A a("my name is a");
+    
+    std::cout << "test 2" << std::endl;
+    A b = a;         // vad är skillnaden
+    
+    std::cout << "test 3" << std::endl;
+    A c(a);          // mellan dessa
+    
+    std::cout << "test 4" << std::endl;
+    A d;             // tre tekniker?
+    
+    std::cout << "test 5" << std::endl;
+    d = a;
+    
+    std::cout << "test 6" << std::endl;
+    no_ref(a);       // Bildas temporära objekt?
+    
+    std::cout << "test 7" << std::endl;
+    with_ref(a);     // Bildas temporära objekt?
+    
+    std::cout << "test 8" << std::endl;
+    A *aa = new A[5];
+    
+    std::cout << "test 9" << std::endl;
+    delete aa;       // Vad kommer att hända?
+    
+    return 0;
+}
+
+
 
 // Vad skriver ditt program ut, var förberedd att förklara varför. 
 
+test 1
+Some other constructor my name is a
+test 2
+The copy contructor
+test 3
+The copy contructor
+test 4
+The default contructor
+test 5
+The assignment operator
+test 6
+The copy contructor
+The destructor
+test 7
+test 8
+The default contructor
+The default contructor
+The default contructor
+The default contructor
+The default contructor
+test 9
+The destructor
+cprog13-vector(85819) malloc: *** error for object 0x1001000e8: pointer being freed was not allocated
+*** set a breakpoint in malloc_error_break to debug
 
 // När frigörs objekten?  
 
