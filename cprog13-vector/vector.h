@@ -16,6 +16,8 @@ class Vector {
     std::size_t size;
     std::unique_ptr<unsigned int[]> values;
     
+    void init(const size_t size);
+    
 public:
     /* Default constructor */
     Vector();

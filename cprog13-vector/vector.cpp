@@ -17,12 +17,13 @@ Vector::Vector() {
 
 /* Size constructor */
 Vector::Vector(const size_t size) {
-    this->size = size;
-    this->values = std::unique_ptr<unsigned int[]>(new unsigned int[size]());
+    init(size);
 }
 
 /* Copy constructor */
-Vector::Vector(const Vector & v) : Vector(v.getSize()) {
+Vector::Vector(const Vector & v) {
+    init(v.getSize());
+    
     for(int i = 0; i < size; i++) {
         values.get()[i] = v[i];
     }
@@ -38,7 +39,9 @@ Vector::Vector(Vector && v) {
 }
 
 /* Assign operator = */
-Vector::Vector(const std::initializer_list<unsigned int> data) : Vector(data.size()) {
+Vector::Vector(const std::initializer_list<unsigned int> data) {
+    init(data.size());
+    
     int i = 0;
     for(std::initializer_list<unsigned int>::iterator it = data.begin(); it != data.end(); ++it) {
         values.get()[i++] = *it;
@@ -48,6 +51,11 @@ Vector::Vector(const std::initializer_list<unsigned int> data) : Vector(data.siz
 Vector::~Vector() {
     size = 0;
     values = nullptr;
+}
+
+void Vector::init(const size_t size) {
+    this->size = size;
+    this->values = std::unique_ptr<unsigned int[]>(new unsigned int[size]());
 }
 
 /* Copy operator = */
