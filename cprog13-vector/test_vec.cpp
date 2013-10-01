@@ -14,6 +14,10 @@ public:
     A(int a) {
         hej = a;
     }
+    
+    bool operator> (const A & a) const{
+        return (hej > a.hej);
+    }
 };
 
 int main()
@@ -49,11 +53,21 @@ int main()
     Vector<A *> apvect;
     Vector<int> ivect(10);
     
-    Vector<A> test(3, A(9));
+    Vector<int> test({3,1,3,0,5,4,6});
     
-    for(int i = 0; i < test.getSize(); i++) {
-        std::cout << test[i].hej;
+    for(int i = 0; i < test.size(); i++) {
+        std::cout << test[i];
     }
+   
+    test.erase(1);
+    
+    std::cout << std::endl;
+    
+    for(int i = 0; i < test.size(); i++) {
+        std::cout << test[i];
+    }
+    
+    std::cout << (test.exists(2) ? "ja" : "nej");
     
     return 0;
 }
