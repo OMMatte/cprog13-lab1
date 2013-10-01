@@ -38,15 +38,7 @@ public:
     Vector & operator= (const Vector & v);
     
     /* Move operator = */
-    Vector& operator= (Vector && v) {
-        if(this == &v) {
-            return *this;
-        }
-        
-        size = v.size;
-        values = std::move(v.values); //TODO: releasas värdena i values?
-        return *this;
-    }
+    Vector& operator= (Vector && v);
     
     /* Access operator [] */
     unsigned int & operator[] (const size_t index) const;

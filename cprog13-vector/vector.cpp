@@ -7,7 +7,7 @@
 //
 
 #include "vector.h"
-
+#include <stdexcept>
 
 /* Default constructor */
 Vector::Vector() {
@@ -51,7 +51,7 @@ Vector::~Vector() {
 }
 
 /* Copy operator = */
-Vector::Vector & operator= (const Vector & v) {
+Vector & Vector::operator= (const Vector & v) {
     if(this == &v) {
         return *this;
     }
@@ -68,7 +68,7 @@ Vector::Vector & operator= (const Vector & v) {
 }
 
 /* Move operator = */
-Vector::Vector& operator= (Vector && v) {
+Vector& Vector::operator= (Vector && v) {
     if(this == &v) {
         return *this;
     }
