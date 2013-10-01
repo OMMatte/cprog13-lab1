@@ -1,73 +1,61 @@
 #include <iostream>
 #include <stdexcept>
 #include "vector.cpp"     // inkludera din headerfil här
-
-class A {
-    
-public:
-    
-    int hej;
-    A() {
-        hej = 1337;
-    }
-    
-    A(int a) {
-        hej = a;
-    }
-    
-    bool operator> (const A & a) const{
-        return (hej > a.hej);
-    }
-};
+#include <assert.h>
 
 int main()
 {
-    // Några saker som ska fungera:
-    Vector<int> a(7);           // initiering med 7 element
-    Vector<int> b(a);           // kopieringskonstruktor
-    Vector<int> c = a;          // kopieringskonstruktor
-
-    a = b;                 // tilldelning genom kopiering
-    a[5] = 7;              // tilldelning till element
-
-    const Vector<int> e(10);    // konstant objekt med 10 element
-    int i = e[5];          // const int oper[](int) const körs
-    i = a[0];              // vektorn är nollindexerad
-    i = a[5];              // int oper[](int) körs
+    Vector<double> v;           // ok: defaultkonstruktor ger vektor med flyttal
+    Vector<char> *a = new Vector<char>[3];  // dynamiskt allokerade ser ut sŒ hŠr
+    delete [] a;
     
-    a[5]++;                // öka värdet till 8
-
-    try {
-        i = e[10];             // försöker hämta element som ligger utanför e
-    } catch (std::out_of_range e) {
-        std::cout << e.what() << std::endl;
+    assert(v.size() == 0);      // tom frŒn bšrjan
+    v.push_back(3.14);          // lŠgg till ett element sist
+    assert(v.size() == 1);      // nu ligger ett element i vektorn
+    v.insert(0, 2.10);          // lŠgg till fšre element 0, dvs fšrst
+    assert(v[0] == 2.10 &&      // hamnade de rŠtt?
+           v[1] == 3.14);
+    assert(v.size() == 2);      // nu ligger tvŒ element i vektorn
+    v.sort(false);              // sortera i fallande ordning
+    assert(v[0] == 3.14 &&      // hamnade de rŠtt?
+           v[1] == 2.10);
+    assert(v.size() == 2);      // ingenting Šndrat?
+    v[1] = 2.11;                // tilldelning av enstaka element;
+    
+    const Vector<double> &vc = v;  // skapa konstant referens
+    assert(vc.size() == 2);     // ok: Šndrar ej vektorn som Šr konstant
+    assert(vc[0] == 3.14 &&     // ok: Šndrar ej vektorn som Šr konstant
+           vc[1] == 2.11);
+    
+    v.erase(0);                 // ta bort fšrsta elementet
+    assert(v.size() == 1);      // rŠtt antal elelment
+    v.clear();                  // tšm hela vektorn
+    assert(v.size() == 0);      // tom nŠr alla element Šr borttagna
+    
+ 
+    Vector<int> lol({0,1,2,3,4,5,6,7});
+    
+    lol.erase(2);
+    lol.erase(4-1);
+    lol.insert(3, 4);
+    lol.insert(0, 0);
+    lol.erase(7);
+    lol.insert(0, 7);
+    lol.insert(8, 0);
+    lol.push_back(9);
+    lol.erase(9);
+    lol.erase(0);
+    lol.erase(0);
+    
+    lol.clear();
+    
+    lol.push_back(1);
+    lol.erase(0);
+    lol.insert(1, 10310311);
+    
+    for(int i = 0; i < lol.size(); i++) {
+        std::cout << lol[i];
     }
-    
-#if 0
-    // Diverse saker att testa
-    e[5] = 3;              // fel: (kompilerar ej) tilldelning till const
-    b = b;                 // hmm: se till att inte minnet som skall behållas frigörs
-#endif
-
-    Vector<double> dvect;
-    Vector<A *> apvect;
-    Vector<int> ivect(10);
-    
-    Vector<int> test({3,1,3,0,5,4,6});
-    
-    for(int i = 0; i < test.size(); i++) {
-        std::cout << test[i];
-    }
-   
-    test.erase(1);
-    
-    std::cout << std::endl;
-    
-    for(int i = 0; i < test.size(); i++) {
-        std::cout << test[i];
-    }
-    
-    std::cout << (test.exists(2) ? "ja" : "nej");
     
     return 0;
 }

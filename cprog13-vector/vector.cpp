@@ -12,12 +12,16 @@
 #include <iterator>
 #include <algorithm>
 
+#define FACTOR     1.5
+
 template <class T>
 class Vector {
     std::size_t mSize;
+    std::size_t mRealSize;
     std::unique_ptr<T[]> mValues;
     
     void init(const size_t size);
+    void upsize();
     
 public:
     /* Default constructor */
@@ -47,7 +51,8 @@ public:
     Vector& operator= (Vector && v);
     
     /* Access operator [] */
-    T & operator[] (const size_t index) const;
+    T & operator[] (const size_t index);
+    T operator[] (const size_t index) const;
     
     void insert(const size_t index, const T & value);
     void push_back(const T & value);
@@ -59,10 +64,15 @@ public:
     bool exists(const T & value) const;
 };
 
+//
+// Constructors / Destructors
+//
+
 /* Default constructor */
 template <class T>
 Vector<T>::Vector() {
     mSize = 0;
+    mRealSize = 0;
     mValues = nullptr;
 }
 
@@ -85,7 +95,7 @@ Vector<T>::Vector(const size_t size, const T & value) {
 /* Copy constructor */
 template <class T>
 Vector<T>::Vector(const Vector & v) {
-    init(v.size());
+    init(v.mSize);
     
     for(int i = 0; i < mSize; i++) {
         mValues.get()[i] = v[i];
@@ -102,6 +112,16 @@ Vector<T>::Vector(Vector && v) {
     v.mValues = nullptr;
 }
 
+template <class T>
+Vector<T>::~Vector() {
+    mSize = 0;
+    mValues = nullptr;
+}
+
+//
+// Operators
+//
+
 /* Assign operator = */
 template <class T>
 Vector<T>::Vector(const std::initializer_list<T> data) {
@@ -111,18 +131,6 @@ Vector<T>::Vector(const std::initializer_list<T> data) {
     for(typename std::initializer_list<T>::iterator it = data.begin(); it != data.end(); ++it) {
         mValues.get()[i++] = *it;
     }
-}
-
-template <class T>
-Vector<T>::~Vector() {
-    mSize = 0;
-    mValues = nullptr;
-}
-
-template <class T>
-void Vector<T>::init(const size_t size) {
-    mSize = size;
-    mValues = std::unique_ptr<T[]>(new T[size]());
 }
 
 /* Copy operator = */
@@ -148,14 +156,14 @@ Vector<T>& Vector<T>::operator= (Vector<T> && v) {
         return *this;
     }
     
-    mSize = v.size;
-    mValues = std::move(v.values); //TODO: releasas värdena i values?
+    mSize = v.mSize;
+    mValues = std::move(v.mValues); //TODO: releasas värdena i values?
     return *this;
 }
 
 /* Access operator [] */
 template <class T>
-T & Vector<T>::operator[] (const size_t index) const {
+T & Vector<T>::operator[] (const size_t index) {
     if(index >=  mSize) {
         throw std::out_of_range("Index too big.");
     }
@@ -163,22 +171,63 @@ T & Vector<T>::operator[] (const size_t index) const {
     return mValues.get()[index];
 }
 
+/* Access operator [] */
+template <class T>
+T Vector<T>::operator[] (const size_t index) const {
+    if(index >=  mSize) {
+        throw std::out_of_range("Index too big.");
+    }
+    
+    return mValues.get()[index];
+}
+
+//
+// Private functions
+//
+
+template <class T>
+void Vector<T>::init(const size_t size) {
+    mSize = size;
+    mRealSize = size;
+    mValues = std::unique_ptr<T[]>(new T[size]());
+}
+
+template <class T>
+void Vector<T>::upsize() {
+    T *current = mValues.release();
+    
+    size_t newSize = mSize*FACTOR + 1;
+    
+    T *bigger = new T[(size_t)(mSize*FACTOR + 1)]();
+    std::copy(current, current + mSize, bigger);
+    
+    delete[] current;
+    
+    mRealSize = newSize;
+    
+    mValues = std::unique_ptr<T[]>(bigger);
+}
+
+//
+// Public functions
+//
+
 template <class T>
 void Vector<T>::insert(const size_t index, const T & value) {
     if(index > mSize) {
         throw std::out_of_range("Index too high.");
     }
     
-    T *array = mValues.release();
+    if(mSize == mRealSize) {
+        upsize();
+    }
     
-    T *array2 = new T[mSize+1];
-    std::copy(array, array + index, array2);
-    std::copy(array + index, array + mSize, array2 + index + 1);
-    array2[index] = value;
+    if(index < mSize) {
+        std::copy_backward(mValues.get() + index, mValues.get() + mSize, mValues.get() + mSize + 1);
+    }
     
-    delete[] array;
+    mValues.get()[index] = value;
     
-    mValues = std::unique_ptr<T[]>(array2);
     mSize++;
 }
 
@@ -195,7 +244,6 @@ void Vector<T>::erase(const size_t index) {
     
     T *start = mValues.get();
 
-    std::copy(start, start + index, start);
     std::copy(start + index + 1, start + mSize, start + index);
     
     mSize--;
@@ -203,7 +251,7 @@ void Vector<T>::erase(const size_t index) {
 
 template <class T>
 void Vector<T>::clear() {
-    init(0);
+    mSize = 0;
 }
 
 template <class T>
@@ -231,8 +279,6 @@ void Vector<T>::unique_sort(bool ascending) {
     
     auto it = std::unique(mValues.get(), mValues.get() + mSize);
     mSize = std::distance(mValues.get(), it);
-    
-    
 }
 
 template <class T>
