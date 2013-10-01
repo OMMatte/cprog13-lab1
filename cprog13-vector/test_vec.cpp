@@ -3,7 +3,17 @@
 #include "vector.cpp"     // inkludera din headerfil här
 
 class A {
+    
+public:
+    
     int hej;
+    A() {
+        hej = 1337;
+    }
+    
+    A(int a) {
+        hej = a;
+    }
 };
 
 int main()
@@ -38,6 +48,12 @@ int main()
     Vector<double> dvect;
     Vector<A *> apvect;
     Vector<int> ivect(10);
+    
+    Vector<A> test(3, A(9));
+    
+    for(int i = 0; i < test.getSize(); i++) {
+        std::cout << test[i].hej;
+    }
     
     return 0;
 }

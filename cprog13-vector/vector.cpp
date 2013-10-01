@@ -24,6 +24,9 @@ public:
     /* Size constructor */
     explicit Vector(const size_t size);
     
+    /* Size value constructor */
+    Vector(const size_t size, const T & value);
+    
     /* Copy constructor */
     Vector(const Vector & v);
     
@@ -58,6 +61,16 @@ Vector<T>::Vector() {
 template <class T>
 Vector<T>::Vector(const size_t size) {
     init(size);
+}
+
+/* Size value constructor */
+template <class T>
+Vector<T>::Vector(const size_t size, const T & value) {
+    init(size);
+    
+    for(int i = 0; i < size; i++) {
+        values.get()[i] = value;
+    }
 }
 
 /* Copy constructor */
@@ -110,9 +123,7 @@ Vector<T> & Vector<T>::operator= (const Vector<T> & v) {
         return *this;
     }
     
-    size = v.getSize();
-    
-    values = std::unique_ptr<T[]>(new T[size]);
+    init(v.getSize());
     
     for(int i = 0; i < size; i++) {
         values.get()[i] = v[i];
