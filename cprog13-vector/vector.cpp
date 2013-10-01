@@ -184,7 +184,7 @@ void Vector<T>::insert(const size_t index, const T & value) {
 
 template <class T>
 void Vector<T>::push_back(const T & value) {
-    Vector::insert(size, value);
+    insert(mSize, value);
 }
 
 template <class T>
