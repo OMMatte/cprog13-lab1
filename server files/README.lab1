@@ -267,6 +267,8 @@ mot
 ==92652==    still reachable: 43,831 bytes in 273 blocks
 ==92652==         suppressed: 0 bytes in 0 blocks
 
+så ja.
+
 // Borde det ha blivit någon skillnad?
 
 Ja, eftersom vi då skapar 5 Data objekt i arrayen, vilket inte
@@ -287,8 +289,29 @@ som skapas och sedan frigöra arrayen.
 // tar ett argument deklareras som explicit. Varför? Ange ett
 // exempel där det annars kan bli dumt.
 
+För att annars kan C++ automatiskt skapa ett objekt med denna konstruktor
+när man angett ett värde av rätt typ till en funktion som tar objektet som parameter.
+
+class String {
+	char *buffer;
+
+	String(int size) {
+		buffer = new char[size];
+	}
+}
+
+void print(String s) {
+	std::cout << s;
+}
+
+print(3); // <- här kan man ju gärna tro att den ska printa ut "3", men detta händer inte pga ovan nämnda problem.
 
 // operatorn[] måste vara en konstant medlemsfunktion i vissa
 // fall. När och varför? Hur kopierar man vektorn?
 
+Den måste vara konstant då den endast returnerar värdet av elementet på det indexet,
+för annars kommer denna funktionalitet ej kunna användas av vektorer som är konstanta.
+Anledningen till att den andra operatorn [] (settern) inte kan ha const är för att 
+man då returnerar en referens, som gör att användaren kan ändra vektorn.
 
+Man kan kopiera vektorn genom att använda vår = operator eller copy-konstruktor.
