@@ -9,8 +9,10 @@
 #ifndef cprog13_vector_vector_h
 #define cprog13_vector_vector_h
 
+#include <stddef.h>
+
 class Vector {
-    size_t size;
+    std::size_t size;
     std::unique_ptr<unsigned int[]> values;
     
 public:
