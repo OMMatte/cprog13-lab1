@@ -12,9 +12,10 @@
 #include <memory>
 #include <initializer_list>
 
+template <class T>
 class Vector {
     std::size_t size;
-    std::unique_ptr<unsigned int[]> values;
+    std::unique_ptr<T[]> values;
     
     void init(const size_t size);
     
@@ -32,7 +33,7 @@ public:
     Vector(Vector && v);
     
     /* Assign operator = */
-    Vector(const std::initializer_list<unsigned int> data);
+    Vector(const std::initializer_list<T> data);
     
     ~Vector();
     
@@ -43,7 +44,7 @@ public:
     Vector& operator= (Vector && v);
     
     /* Access operator [] */
-    unsigned int & operator[] (const size_t index) const;
+    T & operator[] (const size_t index) const;
     
     size_t getSize(void) const;
 };

@@ -6,22 +6,63 @@
 //  Copyright (c) 2013 cprog. All rights reserved.
 //
 
-#include "vector.h"
 #include <stdexcept>
+#include <memory>
+#include <initializer_list>
+
+template <class T>
+class Vector {
+    std::size_t size;
+    std::unique_ptr<T[]> values;
+    
+    void init(const size_t size);
+    
+public:
+    /* Default constructor */
+    Vector();
+    
+    /* Size constructor */
+    explicit Vector(const size_t size);
+    
+    /* Copy constructor */
+    Vector(const Vector & v);
+    
+    /* Move constructor */
+    Vector(Vector && v);
+    
+    /* Assign operator = */
+    Vector(const std::initializer_list<T> data);
+    
+    ~Vector();
+    
+    /* Copy operator = */
+    Vector & operator= (const Vector & v);
+    
+    /* Move operator = */
+    Vector& operator= (Vector && v);
+    
+    /* Access operator [] */
+    T & operator[] (const size_t index) const;
+    
+    size_t getSize(void) const;
+};
 
 /* Default constructor */
-Vector::Vector() {
+template <class T>
+Vector<T>::Vector() {
     size = 0;
     values = nullptr;
 }
 
 /* Size constructor */
-Vector::Vector(const size_t size) {
+template <class T>
+Vector<T>::Vector(const size_t size) {
     init(size);
 }
 
 /* Copy constructor */
-Vector::Vector(const Vector & v) {
+template <class T>
+Vector<T>::Vector(const Vector & v) {
     init(v.getSize());
     
     for(int i = 0; i < size; i++) {
@@ -30,7 +71,8 @@ Vector::Vector(const Vector & v) {
 }
 
 /* Move constructor */
-Vector::Vector(Vector && v) {
+template <class T>
+Vector<T>::Vector(Vector && v) {
     size = v.size;
     v.size = 0;
     
@@ -39,34 +81,38 @@ Vector::Vector(Vector && v) {
 }
 
 /* Assign operator = */
-Vector::Vector(const std::initializer_list<unsigned int> data) {
+template <class T>
+Vector<T>::Vector(const std::initializer_list<T> data) {
     init(data.size());
     
     int i = 0;
-    for(std::initializer_list<unsigned int>::iterator it = data.begin(); it != data.end(); ++it) {
+    for(typename std::initializer_list<T>::iterator it = data.begin(); it != data.end(); ++it) {
         values.get()[i++] = *it;
     }
 }
 
-Vector::~Vector() {
+template <class T>
+Vector<T>::~Vector() {
     size = 0;
     values = nullptr;
 }
 
-void Vector::init(const size_t size) {
+template <class T>
+void Vector<T>::init(const size_t size) {
     this->size = size;
-    this->values = std::unique_ptr<unsigned int[]>(new unsigned int[size]());
+    this->values = std::unique_ptr<T[]>(new T[size]());
 }
 
 /* Copy operator = */
-Vector & Vector::operator= (const Vector & v) {
+template <class T>
+Vector<T> & Vector<T>::operator= (const Vector<T> & v) {
     if(this == &v) {
         return *this;
     }
     
     size = v.getSize();
     
-    values = std::unique_ptr<unsigned int[]>(new unsigned int[size]);
+    values = std::unique_ptr<T[]>(new T[size]);
     
     for(int i = 0; i < size; i++) {
         values.get()[i] = v[i];
@@ -76,7 +122,8 @@ Vector & Vector::operator= (const Vector & v) {
 }
 
 /* Move operator = */
-Vector& Vector::operator= (Vector && v) {
+template <class T>
+Vector<T>& Vector<T>::operator= (Vector<T> && v) {
     if(this == &v) {
         return *this;
     }
@@ -87,7 +134,8 @@ Vector& Vector::operator= (Vector && v) {
 }
 
 /* Access operator [] */
-unsigned int & Vector::operator[] (const size_t index) const {
+template <class T>
+T & Vector<T>::operator[] (const size_t index) const {
     if(index >= size) {
         throw std::out_of_range("Index too big.");
     }
@@ -95,6 +143,7 @@ unsigned int & Vector::operator[] (const size_t index) const {
     return values.get()[index];
 }
 
-size_t Vector::getSize(void) const {
+template <class T>
+size_t Vector<T>::getSize(void) const {
     return size;
 }
