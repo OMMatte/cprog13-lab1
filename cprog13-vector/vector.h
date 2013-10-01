@@ -9,7 +9,8 @@
 #ifndef cprog13_vector_vector_h
 #define cprog13_vector_vector_h
 
-#include <stddef.h>
+#include <memory>
+#include <initializer_list>
 
 class Vector {
     std::size_t size;
@@ -17,62 +18,24 @@ class Vector {
     
 public:
     /* Default constructor */
-    Vector() {
-        size = 0;
-        values = nullptr;
-    }
+    Vector();
     
     /* Size constructor */
-    explicit Vector(const size_t size) {
-        this->size = size;
-        this->values = std::unique_ptr<unsigned int[]>(new unsigned int[size]());
-    }
+    explicit Vector(const size_t size);
     
     /* Copy constructor */
-    Vector(const Vector & v) : Vector(v.getSize()) {
-        for(int i = 0; i < size; i++) {
-            values.get()[i] = v[i];
-        }
-    }
+    Vector(const Vector & v);
     
     /* Move constructor */
-    Vector(Vector && v) {
-        size = v.size;
-        v.size = 0;
-        
-        values = std::move(v.values);
-        v.values = nullptr; //KOLLA!
-    }
+    Vector(Vector && v);
     
     /* Assign operator = */
-    Vector(const std::initializer_list<unsigned int> data) : Vector(data.size()) {
-        int i = 0;
-        for(std::initializer_list<unsigned int>::iterator it = data.begin(); it != data.end(); ++it) {
-            values.get()[i++] = *it;
-        }
-    }
+    Vector(const std::initializer_list<unsigned int> data);
     
-    ~Vector() {
-        size = 0;
-        values = nullptr;
-    }
+    ~Vector();
     
     /* Copy operator = */
-    Vector & operator= (const Vector & v) {
-        if(this == &v) {
-            return *this;
-        }
-        
-        size = v.getSize();
-        
-        values = std::unique_ptr<unsigned int[]>(new unsigned int[size]);
-        
-        for(int i = 0; i < size; i++) {
-            values.get()[i] = v[i];
-        }
-        
-        return *this;
-    }
+    Vector & operator= (const Vector & v);
     
     /* Move operator = */
     Vector& operator= (Vector && v) {
@@ -86,17 +49,9 @@ public:
     }
     
     /* Access operator [] */
-    unsigned int & operator[] (const size_t index) const {
-        if(index >= size) {
-            throw std::out_of_range("Index too big.");
-        }
-        
-        return values.get()[index];
-    }
+    unsigned int & operator[] (const size_t index) const;
     
-    size_t getSize(void) const {
-        return size;
-    }
+    size_t getSize(void) const;
 };
 
 #endif
