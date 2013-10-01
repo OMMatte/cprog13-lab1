@@ -32,30 +32,73 @@ int main()
     v.clear();                  // tšm hela vektorn
     assert(v.size() == 0);      // tom nŠr alla element Šr borttagna
     
- 
-    Vector<int> lol({0,1,2,3,4,5,6,7});
     
-    lol.erase(2);
-    lol.erase(4-1);
-    lol.insert(3, 4);
-    lol.insert(0, 0);
-    lol.erase(7);
-    lol.insert(0, 7);
-    lol.insert(8, 0);
-    lol.push_back(9);
-    lol.erase(9);
-    lol.erase(0);
-    lol.erase(0);
+    assert(!v.exists(2.3));
+    v.insert(0, 2.3);
+    assert(v.exists(2.3));
+    v.clear();
     
-    lol.clear();
+    v.push_back(2.0);
+    v.push_back(3.0);
+    v.push_back(4.3);
+    v.erase(2);
+    assert(v[0] == 2.0 &&
+           v[1] == 3.0 && v.size() == 2);
+    v.insert(1, 5.0);
+    v.erase(1);
+    assert(v[0] == 2.0 &&
+           v[1] == 3.0 && v.size() == 2);
     
-    lol.push_back(1);
-    lol.erase(0);
-    lol.insert(1, 10310311);
-    
-    for(int i = 0; i < lol.size(); i++) {
-        std::cout << lol[i];
+    Vector<int> b({4,1,2,3,5,7,6,0});
+    b.sort();
+    for(int i = 0; i < b.size(); i++){
+        assert(b[i] == i);
     }
     
+    b.sort(false);
+    for(int i = 0; i < b.size(); i++){
+        assert(b[b.size()-1-i] == i);
+    }
+    
+    b.push_back(4);
+    b.push_back(3);
+    b.push_back(7);
+    b.push_back(2);
+    b.push_back(2);
+    
+    b.unique_sort();
+    
+    for(int i = 0; i < b.size(); i++){
+        assert(b[i] == i);
+    }
+    
+    b.push_back(4);
+    b.push_back(3);
+    b.push_back(7);
+    b.push_back(2);
+    b.push_back(2);
+    
+    b.unique_sort(false);
+    for(int i = 0; i < b.size(); i++){
+        assert(b[b.size()-1-i] == i);
+    }
+    
+    assert(b.size() == 8);
+    
+    Vector<int> c = b;
+    
+    b.erase(3);
+
+    for(int i = 0; i < b.size(); i++){
+        assert(c[c.size()-1-i] == i);
+    }
+    
+    assert(c.size() == 8);
+    
+    c.insert(8, 10);
+    assert(c[8] == 10);
+    c.insert(0, 11);
+    assert(c[0] == 11);
+        
     return 0;
 }
