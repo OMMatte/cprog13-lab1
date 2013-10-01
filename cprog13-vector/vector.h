@@ -1,14 +1,13 @@
 //
-//  main.cpp
+//  vector.h
 //  cprog13-vector
 //
-//  Created by Lucas Wiener on 9/30/13.
+//  Created by Lucas Wiener on 10/1/13.
 //  Copyright (c) 2013 cprog. All rights reserved.
 //
 
-//http://blog.smartbear.com/c-plus-plus/c11-tutorial-introducing-the-move-constructor-and-the-move-assignment-operator/
-
-#include <iostream>
+#ifndef cprog13_vector_vector_h
+#define cprog13_vector_vector_h
 
 class Vector {
     size_t size;
@@ -98,23 +97,4 @@ public:
     }
 };
 
-int main() {
-    Vector a = Vector(2);
-    Vector b(std::move(a));
-    Vector vektor(10);
-    
-    a = b;
-    
-    int x = 2;
-    int i = vektor[7];
-    vektor[3] = x; // OBS, ska fungera!
-    Vector v2;
-    v2 = {1, 2, 5};
-    v2 = std::move(v2);
-    v2[0] = 9;
-    
-    for(int i = 0; i < vektor.getSize(); i++) {
-        std::cout << vektor[i];
-    }
-}
-
+#endif
