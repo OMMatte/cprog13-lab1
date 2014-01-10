@@ -1,6 +1,7 @@
 #ifndef MATRIX_TEST_H_INCLUDED
 #define MATRIX_TEST_H_INCLUDED
 
+//#include "../../cprog13-vector/Matrix.h"
 #include "Matrix.h"
 #include "../cxxtest/cxxtest/TestSuite.h"
 #include <fstream>
@@ -151,7 +152,7 @@ public:
                 TS_ASSERT ( m3[row][col] == m1[row][col] + m2[row][col]); // 5 failing. Due to programmer lacking basic math knowledge
                 TS_ASSERT ( m4[row][col] == m1[row][col] - m2[row][col]);
                 TS_ASSERT ( m5[row][col] == m1[row][col] * 6);
-//                TS_ASSERT ( m14[row][col] == 6 * m1[row][col]);
+                TS_ASSERT ( m14[row][col] == 6 * m1[row][col]);
                 TS_ASSERT ( m8[row][col] == m1[row][col] * -1); // 7 failing. Can't handle Unary negation
                 TS_ASSERT ( m11[row][col] == 0);
                 TS_ASSERT ( m12[row][col] == m3[row][col]);
@@ -186,6 +187,7 @@ public:
             TS_ASSERT(false);
             std::cout << "Transpose is not working..." << std::endl;
         }
+        
         m2 = a_matrix_5by4();
         
         Matrix m9 = m2;
@@ -247,37 +249,37 @@ public:
         try {
             mf = me * me;
             throw std::runtime_error( "We can multiply matrices that should not be allowed." );
-        } catch (const std::out_of_range& oor) {
-            //All good!
-        }
+        } 
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
         try{
             mf = me + me2;
             throw std::runtime_error( "We can do addition on different sized matrices." );
-        } catch (const std::out_of_range& oor) {
-            //All good!
         }
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
         try{
             mf = me - me2;
             throw std::runtime_error( "We can do subtraction on different sized matrices." );
-        } catch (const std::out_of_range& oor) {
-            //All good!
-        }
+        } 
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
         try{
             int i = me[2][0];
             throw std::runtime_error( "We can access elements out of range." );
-        } catch (const std::out_of_range& oor) {
-            //All good!
-        }
+        } 
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
         try{
             int i = me[0][3];
             throw std::runtime_error( "We can access elements out of range." );
-        } catch (const std::out_of_range& oor) {
-            //All good!
-        }
+        } 
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
         
     }
