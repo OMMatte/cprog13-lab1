@@ -8,12 +8,14 @@
 
 template <class T>
 class Vector {
+    // The size of the underlaying array.
     std::size_t mSize;
-    std::size_t mRealSize;
-    std::unique_ptr<T[]> mValues;
     
-    void init(const size_t size);
-    void upsize();
+    // The number of actual elements stored in the array.
+    std::size_t mRealSize;
+    
+    // The underlaying array to store the values.
+    std::unique_ptr<T[]> mValues;
     
 public:
     /* Default constructor */
@@ -22,8 +24,8 @@ public:
     /* Size constructor, set to explicit to prevent implicit conversions. If a function foo takes a vector parameter, the function cannot be called as foo(1). The user might think a vector with element 1 is constructed, when it is instead an empty vector of size 1 is constructed. */
     explicit Vector(const size_t size);
     
-    /* Size value constructor */
-    Vector(const size_t size, const T & value);
+    /* Size value constructor. Inits all elements to the value. */
+    Vector(const size_t size, const T value);
     
     /* Copy constructor */
     Vector(const Vector & v);
@@ -32,28 +34,33 @@ public:
     Vector(Vector && v);
     
     /* Intializer list Constructor = */
-    Vector(const std::initializer_list<T> data); //TODO: why not reference?
+    Vector(const std::initializer_list<T> & data);
     
+    /* Destructor. */
     ~Vector();
     
     /* Copy operator = */
     Vector & operator= (const Vector & v);
     
     /* Move operator = */
-    Vector& operator= (Vector && v);
+    Vector & operator= (Vector && v);
     
     /* Access operator [] */
-    T & operator[] (const size_t index);
-    T operator[] (const size_t index) const;
+    T & operator[] (const size_t & index);
+    T operator[] (const size_t & index) const; //TODO: Why not return const reference? Check how real vector is doing.
     
-    void insert(const size_t index, const T & value);
-    void push_back(const T & value);
-    void erase(const size_t index);
+    void insert(const size_t & index, const T value);
+    void push_back(const T value);
+    void erase(const size_t & index);
     void clear();
     size_t size() const;
     void sort(bool ascending = true);
     void unique_sort(bool ascending = true);
     bool exists(const T & value) const;
+    
+private:
+    void init(const size_t size); //TODO: Reference or not?
+    void upsize();
 };
 
 //
@@ -76,7 +83,7 @@ Vector<T>::Vector(const size_t size) {
 
 /* Size value constructor */
 template <class T>
-Vector<T>::Vector(const size_t size, const T & value) {
+Vector<T>::Vector(const size_t size, const T value) {
     init(size);
     
     for(int i = 0; i < size; i++) {
@@ -104,19 +111,17 @@ Vector<T>::Vector(Vector && v) {
     v.mValues = nullptr;
 }
 
+/* Destructor */
 template <class T>
 Vector<T>::~Vector() {
     mSize = 0;
     mValues = nullptr;
 }
 
-//
-// Operators
-//
 
-/* Assign operator = */
+/* Intializer list Constructor = */
 template <class T>
-Vector<T>::Vector(const std::initializer_list<T> data) {
+Vector<T>::Vector(const std::initializer_list<T> & data) {
     init(data.size());
     
     int i = 0;
@@ -124,6 +129,10 @@ Vector<T>::Vector(const std::initializer_list<T> data) {
         mValues.get()[i++] = *it;
     }
 }
+
+//
+// Operators
+//
 
 /* Copy operator = */
 template <class T>
@@ -155,7 +164,7 @@ Vector<T>& Vector<T>::operator= (Vector<T> && v) {
 
 /* Access operator [] */
 template <class T>
-T & Vector<T>::operator[] (const size_t index) {
+T & Vector<T>::operator[] (const size_t & index) {
     if(index >=  mSize) {
         throw std::out_of_range("Index too big.");
     }
@@ -165,7 +174,7 @@ T & Vector<T>::operator[] (const size_t index) {
 
 /* Access operator [] */
 template <class T>
-T Vector<T>::operator[] (const size_t index) const {
+T Vector<T>::operator[] (const size_t & index) const {
     if(index >=  mSize) {
         throw std::out_of_range("Index too big.");
     }
@@ -205,7 +214,7 @@ void Vector<T>::upsize() {
 //
 
 template <class T>
-void Vector<T>::insert(const size_t index, const T & value) {
+void Vector<T>::insert(const size_t & index, const T value) {
     if(index > mSize) {
         throw std::out_of_range("Index too high.");
     }
@@ -224,12 +233,12 @@ void Vector<T>::insert(const size_t index, const T & value) {
 }
 
 template <class T>
-void Vector<T>::push_back(const T & value) {
+void Vector<T>::push_back(const T value) {
     insert(mSize, value);
 }
 
 template <class T>
-void Vector<T>::erase(const size_t index) {
+void Vector<T>::erase(const size_t & index) {
     if(index >= mSize) {
         throw std::out_of_range("Index too high.");
     }
