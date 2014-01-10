@@ -69,7 +69,11 @@ Matrix::Matrix(std::size_t size) : Matrix(size, size) {
     }
 }
 
-Matrix::Matrix(std::size_t rows, std::size_t cols) : mData(Vector<matrix_row>(rows, matrix_row(cols))), mRows(rows), mCols(cols) {}
+Matrix::Matrix(std::size_t rows, std::size_t cols) : mData(Vector<matrix_row>(rows, matrix_row(cols))), mRows(rows), mCols(cols) {
+    if((mRows == 0 && mCols != 0) || (mCols == 0 && mRows != 0)) {
+        throw std::invalid_argument("Row and columns cannot be 0 on their own");
+    }
+}
 
 Matrix::Matrix(const Matrix & matrix) : mData(matrix.mData), mRows(matrix.mRows), mCols(matrix.mCols) {}
 
