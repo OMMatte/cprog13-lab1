@@ -1,7 +1,8 @@
 #ifndef MATRIX_TEST_H_INCLUDED
 #define MATRIX_TEST_H_INCLUDED
 
-#include "Matrix.h"
+#include "../../cprog13-vector/Matrix.h"
+//#include "Matrix.h"
 #include "../cxxtest/cxxtest/TestSuite.h"
 #include <fstream>
 #include <sstream>
@@ -119,9 +120,9 @@ public:
         try {
             m14 = 6 * m1;
             //All good!
-        } catch (const std::out_of_range& oor) {
-            throw std::runtime_error( "Something wrong with * operator with int to the left." );
-        }
+        } 
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
         
         TS_ASSERT (m14.rows() == m1.rows() && m14.cols() == m1.cols());
@@ -165,9 +166,9 @@ public:
         
         try {
             m2.transpose().transpose(); // 9 failing. In combination with assignment operator 
-        } catch (const std::out_of_range& oor) {
-            throw std::runtime_error( "Transpose is not working..." );
-        }
+        } 
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
 //        init_matrix(m2, "  [ -2 3 -4 0 15 ; -1 1 1 -1 1 ; -8 -7 -6 -5 -4 ; 100 99 88 77 -66 ]");
         m2 = a_matrix_5by4();
@@ -231,37 +232,37 @@ public:
         try {
             mf = me * me;
             throw std::runtime_error( "We can multiply matrices that should not be allowed." );
-        } catch (const std::out_of_range& oor) {
-            //All good!
-        }
+        } 
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
         try{
             mf = me + me2;
             throw std::runtime_error( "We can do addition on different sized matrices." );
-        } catch (const std::out_of_range& oor) {
-            //All good!
         }
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
         try{
             mf = me - me2;
             throw std::runtime_error( "We can do subtraction on different sized matrices." );
-        } catch (const std::out_of_range& oor) {
-            //All good!
-        }
+        } 
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
         try{
             int i = me[2][0];
             throw std::runtime_error( "We can access elements out of range." );
-        } catch (const std::out_of_range& oor) {
-            //All good!
-        }
+        } 
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
         try{
             int i = me[0][3];
             throw std::runtime_error( "We can access elements out of range." );
-        } catch (const std::out_of_range& oor) {
-            //All good!
-        }
+        } 
+        catch (const std::invalid_argument &) {}
+        catch (const std::out_of_range &) {}
         
         
     }
