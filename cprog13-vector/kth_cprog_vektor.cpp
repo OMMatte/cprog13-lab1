@@ -1,11 +1,3 @@
-//
-//  main.cpp
-//  cprog13-vector
-//
-//  Created by Lucas Wiener on 9/30/13.
-//  Copyright (c) 2013 cprog. All rights reserved.
-//
-
 #include <stdexcept>
 #include <memory>
 #include <initializer_list>
