@@ -282,35 +282,35 @@ void matrix() {
         throw std::runtime_error( "We can multiply matrices that should not be allowed." );
     } catch (const std::out_of_range& oor) {
         //All good!
-    }
+    } catch(const std::invalid_argument &) {}
     
     try{
         mf = me + me2;
         throw std::runtime_error( "We can do addition on different sized matrices." );
-    } catch (const std::out_of_range& oor) {
-        //All good!
     }
+    catch(const std::out_of_range &) {}
+    catch(const std::invalid_argument &) {}
     
     try{
         mf = me - me2;
         throw std::runtime_error( "We can do subtraction on different sized matrices." );
-    } catch (const std::out_of_range& oor) {
-        //All good!
     }
+    catch(const std::out_of_range &) {}
+    catch(const std::invalid_argument &) {}
     
     try{
         int i = me[2][0];
         throw std::runtime_error( "We can access elements out of range." );
-    } catch (const std::out_of_range& oor) {
-        //All good!
     }
+    catch(const std::out_of_range &) {}
+    catch(const std::invalid_argument &) {}
     
     try{
         int i = me[0][3];
         throw std::runtime_error( "We can access elements out of range." );
-    } catch (const std::out_of_range& oor) {
-        //All good!
     }
+    catch(const std::out_of_range &) {}
+    catch(const std::invalid_argument &) {}
 }
 
 int main()
@@ -318,6 +318,9 @@ int main()
     //vector();
     
     matrix();
+    
+    std::cout << "success" << std::endl;
+    
     return 0;
 }
 
