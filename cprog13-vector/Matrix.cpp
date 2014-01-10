@@ -3,6 +3,29 @@
 #include <iostream>
 
 std::istream & operator>> (std::istream & in, Matrix & matrix) {
+    std::string input;
+    
+    std::getline(in, input);
+    
+    Matrix::matrix_row row;
+    std::size_t prev;
+    std::size_t next = prev = input.find("[") + 1;
+    while((next = input.find(" ", next + 1)) != std::string::npos) {
+        std::string unit = input.substr(prev + 1, next - prev - 1);
+        prev = next;
+        
+        if(unit == ";") {
+            matrix.addRow(row);
+            row.clear();
+        } else {
+            row.push_back(std::stoi(unit));
+        }
+    }
+    
+    if(row.size() != 0) {
+        matrix.addRow(row);
+    }
+    
     return in;
 }
 
@@ -163,4 +186,17 @@ std::size_t Matrix::rows() const {
 
 std::size_t Matrix::cols() const {
     return mCols;
+}
+
+void Matrix::addRow(Matrix::matrix_row row) {
+    if(row.size() != cols() && cols() != 0) {
+        throw std::invalid_argument("Added row must fit in the matrix");
+    }
+    
+    mData.push_back(row);
+    mRows++;
+    
+    if(mCols == 0) {
+        mCols = row.size();
+    }
 }

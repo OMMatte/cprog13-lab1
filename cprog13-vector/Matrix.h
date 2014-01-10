@@ -15,6 +15,7 @@ public:
         using Vector<int>::operator [];
     private:
         friend std::istream & operator>>( std::istream &, Matrix & );
+        friend Matrix;
     };
     
     Matrix();
@@ -44,6 +45,7 @@ private:
     std::size_t                 mRows;
     std::size_t                 mCols;
     
+    void addRow(matrix_row);
     friend std::istream & operator>> (std::istream &, Matrix &);
     
     void assureRows(const Matrix &) const throw(std::invalid_argument);
