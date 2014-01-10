@@ -15,6 +15,7 @@ public:
         using Vector<int>::operator [];
     private:
         friend std::istream & operator>>( std::istream &, Matrix & );
+        friend Matrix;
     };
     
     Matrix();
@@ -25,6 +26,7 @@ public:
     ~Matrix();
     
     Matrix & operator= (const Matrix &);
+    Matrix & operator= (Matrix && matrix);
     Matrix operator+ (const Matrix &) const throw(std::invalid_argument);
     Matrix operator* (const Matrix &) const throw(std::invalid_argument);
     Matrix operator* (int) const;
@@ -33,8 +35,8 @@ public:
     
     Matrix & transpose();
     
-    matrix_row & operator[] (index i) throw(std::invalid_argument);
-    const matrix_row & operator[] (index i) const throw(std::invalid_argument);
+    matrix_row & operator[] (index i) throw(std::out_of_range);
+    const matrix_row & operator[] (index i) const throw(std::out_of_range);
     
     std::size_t rows() const;
     std::size_t cols() const;
@@ -44,6 +46,7 @@ private:
     std::size_t                 mRows;
     std::size_t                 mCols;
     
+    void addRow(matrix_row);
     friend std::istream & operator>> (std::istream &, Matrix &);
     
     void assureRows(const Matrix &) const throw(std::invalid_argument);
