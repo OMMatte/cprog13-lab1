@@ -62,7 +62,13 @@ Matrix operator* (int value, const Matrix & matrix) {
 }
 
 Matrix::Matrix() : Matrix(0, 0) {}
-Matrix::Matrix(std::size_t size) : Matrix(size, size) {}
+
+Matrix::Matrix(std::size_t size) : Matrix(size, size) {
+    for(index i = 0; i < size; i++) {
+        mData[i][i] = 1;
+    }
+}
+
 Matrix::Matrix(std::size_t rows, std::size_t cols) : mData(Vector<matrix_row>(rows, matrix_row(cols))), mRows(rows), mCols(cols) {}
 
 Matrix::Matrix(const Matrix & matrix) : mData(matrix.mData), mRows(matrix.mRows), mCols(matrix.mCols) {}
