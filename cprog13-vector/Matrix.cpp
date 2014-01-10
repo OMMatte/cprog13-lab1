@@ -141,17 +141,17 @@ Matrix & Matrix::transpose() {
     return *this;
 }
 
-Matrix::matrix_row & Matrix::operator[] (index i) throw(std::invalid_argument) {
+Matrix::matrix_row & Matrix::operator[] (index i) throw(std::out_of_range) {
     if(i >= rows()) {
-        throw std::invalid_argument("Index out of bounds");
+        throw std::out_of_range("Index out of bounds");
     }
     
     return mData[i];
 }
 
-const Matrix::matrix_row & Matrix::operator[] (index i) const throw(std::invalid_argument) {
+const Matrix::matrix_row & Matrix::operator[] (index i) const throw(std::out_of_range) {
     if(i >= rows()) {
-        throw std::invalid_argument("Index out of bounds");
+        throw std::out_of_range("Index out of bounds");
     }
     
     return mData[i];

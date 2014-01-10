@@ -33,8 +33,8 @@ public:
     
     Matrix & transpose();
     
-    matrix_row & operator[] (index i) throw(std::invalid_argument);
-    const matrix_row & operator[] (index i) const throw(std::invalid_argument);
+    matrix_row & operator[] (index i) throw(std::out_of_range);
+    const matrix_row & operator[] (index i) const throw(std::out_of_range);
     
     std::size_t rows() const;
     std::size_t cols() const;
