@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "kth_cprog_vektor.cpp"     // inkludera din headerfil här
 #include <assert.h>
+#include <vector>
 
 int main()
 {
@@ -99,6 +100,27 @@ int main()
     assert(c[8] == 10);
     c.insert(0, 11);
     assert(c[0] == 11);
+    
+    {
+        Vector<std::string> a = Vector<std::string>({"hejsan"});
+        auto b = Vector<std::string>({"tjena"});
+        
+        b = a;
+        
+        b[0].append("!");
+        
+        assert(b[0] == "hejsan!");
+        assert(a[0] == "hejsan");
+    }
+    {
+        auto a = Vector<std::string>({"test"});
+        a[0].append("!");
+        auto b = Vector<std::string>(std::move(a));
+    }
+    {
+        auto a = Vector<std::string>();
+        a.push_back("hej");
+    }
     
     std::cout << "Success" << std::endl;
     

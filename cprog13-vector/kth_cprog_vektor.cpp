@@ -47,7 +47,7 @@ public:
     
     /* Access operator [] */
     T & operator[] (const size_t & index);
-    T operator[] (const size_t & index) const; //TODO: Why not return const reference? Check how real vector is doing.
+    const T & operator[] (const size_t & index) const;
     
     void insert(const size_t & index, const T value);
     void push_back(const T value);
@@ -59,7 +59,7 @@ public:
     bool exists(const T & value) const;
     
 private:
-    void init(const size_t size); //TODO: Reference or not?
+    void init(const size_t size);
     void upsize();
 };
 
@@ -69,11 +69,7 @@ private:
 
 /* Default constructor */
 template <class T>
-Vector<T>::Vector() {
-    mSize = 0;
-    mRealSize = 0;
-    mValues = nullptr;
-}
+Vector<T>::Vector() : mSize(0), mRealSize(0), mValues(nullptr) {}
 
 /* Size constructor */
 template <class T>
@@ -104,20 +100,18 @@ Vector<T>::Vector(const Vector & v) {
 /* Move constructor */
 template <class T>
 Vector<T>::Vector(Vector && v) {
-    mSize = v.mSize();
-    v.mSsize = 0;
-    
+    mSize = v.mSize;
+    mRealSize = v.mRealSize;
     mValues = std::move(v.mValues);
-    v.mValues = nullptr;
 }
 
 /* Destructor */
 template <class T>
 Vector<T>::~Vector() {
     mSize = 0;
+    mRealSize = 0;
     mValues = nullptr;
 }
-
 
 /* Intializer list Constructor = */
 template <class T>
@@ -125,8 +119,8 @@ Vector<T>::Vector(const std::initializer_list<T> & data) {
     init(data.size());
     
     int i = 0;
-    for(typename std::initializer_list<T>::iterator it = data.begin(); it != data.end(); ++it) {
-        mValues.get()[i++] = *it;
+    for(auto element : data) {
+        mValues.get()[i++] = element;
     }
 }
 
@@ -152,13 +146,15 @@ Vector<T> & Vector<T>::operator= (const Vector<T> & v) {
 
 /* Move operator = */
 template <class T>
-Vector<T>& Vector<T>::operator= (Vector<T> && v) {
+Vector<T> & Vector<T>::operator= (Vector<T> && v) {
     if(this == &v) {
         return *this;
     }
     
     mSize = v.mSize;
-    mValues = std::move(v.mValues); //TODO: releasas värdena i values?
+    mRealSize = v.mRealSize;
+    mValues = std::move(v.mValues);
+    
     return *this;
 }
 
@@ -174,7 +170,7 @@ T & Vector<T>::operator[] (const size_t & index) {
 
 /* Access operator [] */
 template <class T>
-T Vector<T>::operator[] (const size_t & index) const {
+const T & Vector<T>::operator[] (const size_t & index) const {
     if(index >=  mSize) {
         throw std::out_of_range("Index too big.");
     }
@@ -199,8 +195,8 @@ void Vector<T>::upsize() {
     
     size_t newSize = mSize*FACTOR + 1;
     
-    T *bigger = new T[(size_t)(mSize*FACTOR + 1)]();
-    std::copy(current, current + mSize, bigger);
+    T *bigger = new T[newSize]();
+    std::move(current, current + mSize, bigger);
     
     delete[] current;
     
@@ -224,7 +220,8 @@ void Vector<T>::insert(const size_t & index, const T value) {
     }
     
     if(index < mSize) {
-        std::copy_backward(mValues.get() + index, mValues.get() + mSize, mValues.get() + mSize + 1);
+        T * start = mValues.get();
+        std::move_backward(start + index, start + mSize, start + mSize + 1);
     }
     
     mValues.get()[index] = value;
@@ -243,15 +240,16 @@ void Vector<T>::erase(const size_t & index) {
         throw std::out_of_range("Index too high.");
     }
     
-    T *start = mValues.get();
-    
-    std::copy(start + index + 1, start + mSize, start + index);
+    T * start = mValues.get();
+    std::move(start + index + 1, start + mSize, start + index);
     
     mSize--;
 }
 
 template <class T>
 void Vector<T>::clear() {
+    //Only set size to 0 so that user cannot access old data. The old data will still be present, but inaccessible and replaced by the user when new data is added.
+    //Just like std::vector.
     mSize = 0;
 }
 
