@@ -1,11 +1,11 @@
 #include <iostream>
 #include <stdexcept>
-#include "kth_cprog_vektor.cpp"     // inkludera din headerfil h‰r
+//#include "kth_cprog_vektor.cpp"     // inkludera din headerfil h‰r
 #include <assert.h>
 #include <vector>
+#include "Matrix.h"
 
-int main()
-{
+void vector() {
     Vector<double> v;           // ok: defaultkonstruktor ger vektor med flyttal
     Vector<char> *a = new Vector<char>[3];  // dynamiskt allokerade ser ut så här
     delete [] a;
@@ -89,7 +89,7 @@ int main()
     Vector<int> c = b;
     
     b.erase(3);
-
+    
     for(int i = 0; i < b.size(); i++){
         assert(c[c.size()-1-i] == i);
     }
@@ -123,6 +123,27 @@ int main()
     }
     
     std::cout << "Success" << std::endl;
+}
+
+void matrix() {
+    Matrix m(2, 2);
+    m[0][0] = 1;
+    m[0][1] = 2;
+    m[1][0] = -3;
+    m[1][1] = 4;
     
+    std::cout << m << std::endl;
+    
+    std::cin >> m;
+    
+    std::cout << m << std::endl;
+}
+
+int main()
+{
+    //vector();
+    
+    matrix();
     return 0;
 }
+
