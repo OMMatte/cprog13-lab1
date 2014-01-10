@@ -26,6 +26,7 @@ public:
     ~Matrix();
     
     Matrix & operator= (const Matrix &);
+    Matrix & operator= (Matrix && matrix);
     Matrix operator+ (const Matrix &) const throw(std::invalid_argument);
     Matrix operator* (const Matrix &) const throw(std::invalid_argument);
     Matrix operator* (int) const;

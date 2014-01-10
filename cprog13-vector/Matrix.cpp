@@ -1,11 +1,20 @@
 #include "Matrix.h"
 #include <string>
 #include <iostream>
+#include <sstream>
+#include <algorithm>
 
 std::istream & operator>> (std::istream & in, Matrix & matrix) {
-    std::string input;
+    //Read the stream buffer into a stringstream which can construct the string.
+    //This to read the whole chunk of the stream into the input string in once.
+    std::stringstream sstr;
+    sstr << in.rdbuf();
+    std::string input = sstr.str();
     
-    std::getline(in, input);
+    //Erase all the newline characters, if any.
+    input.erase(std::remove(input.begin(), input.end(), '\n'), input.end());
+    
+    matrix = Matrix();
     
     Matrix::matrix_row row;
     std::size_t prev;
@@ -63,7 +72,7 @@ Matrix::Matrix(Matrix && matrix) : mData(std::move(matrix.mData)), mRows(matrix.
 Matrix::~Matrix() {}
 
 Matrix & Matrix::operator=(const Matrix & matrix) {
-    //TODO: Is this okay way of moving the data?
+    //TODO: Is this okay way of copying the data?
     mData = matrix.mData;
     mRows = matrix.mRows;
     mCols = matrix.mCols;
@@ -71,14 +80,22 @@ Matrix & Matrix::operator=(const Matrix & matrix) {
     return *this;
 }
 
+Matrix & Matrix::operator=(Matrix && matrix) {
+    mData = std::move(matrix.mData);
+    mRows = matrix.mRows;
+    mCols = matrix.mCols;
+    
+    return *this;
+}
+
 void Matrix::assureRows(const Matrix & matrix) const throw(std::invalid_argument) {
-    if(cols() != matrix.cols()) {
+    if(rows() != matrix.rows()) {
         throw std::invalid_argument("Matrix got wrong dimension");
     }
 }
 
 void Matrix::assureCols(const Matrix & matrix) const throw(std::invalid_argument) {
-    if(rows() != matrix.cols()) {
+    if(cols() != matrix.cols()) {
         throw std::invalid_argument("Matrix got wrong dimension");
     }
 }
@@ -132,8 +149,10 @@ Matrix Matrix::operator* (const Matrix & matrix) const throw(std::invalid_argume
     }
     
     const std::size_t LENGTH = matrix.rows();
+    
+    Matrix result(rows(), matrix.cols());
 
-    return everyOperation([this, LENGTH, matrix] (index row, index col, int) {
+    auto multiplyRowCol = [this, & LENGTH, & matrix] (index row, index col) {
         int result = 0;
         
         for(index i = 0; i < LENGTH; i++) {
@@ -141,7 +160,15 @@ Matrix Matrix::operator* (const Matrix & matrix) const throw(std::invalid_argume
         }
         
         return result;
-    });
+    };
+    
+    for(index row = 0; row < rows(); row++) {
+        for(index col = 0; col < matrix.cols(); col++) {
+            result[row][col] = multiplyRowCol(row, col);
+        }
+    }
+    
+    return result;
 }
 
 Matrix & Matrix::transpose() {
