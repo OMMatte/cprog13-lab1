@@ -62,7 +62,13 @@ Matrix operator* (int value, const Matrix & matrix) {
 }
 
 Matrix::Matrix() : Matrix(0, 0) {}
-Matrix::Matrix(std::size_t size) : Matrix(size, size) {}
+
+Matrix::Matrix(std::size_t size) : Matrix(size, size) {
+    for(index i = 0; i < size; i++) {
+        mData[i][i] = 1;
+    }
+}
+
 Matrix::Matrix(std::size_t rows, std::size_t cols) : mData(Vector<matrix_row>(rows, matrix_row(cols))), mRows(rows), mCols(cols) {}
 
 Matrix::Matrix(const Matrix & matrix) : mData(matrix.mData), mRows(matrix.mRows), mCols(matrix.mCols) {}
@@ -88,19 +94,19 @@ Matrix & Matrix::operator=(Matrix && matrix) {
     return *this;
 }
 
-void Matrix::assureRows(const Matrix & matrix) const throw(std::invalid_argument) {
+void Matrix::assureRows(const Matrix & matrix) const {
     if(rows() != matrix.rows()) {
         throw std::invalid_argument("Matrix got wrong dimension");
     }
 }
 
-void Matrix::assureCols(const Matrix & matrix) const throw(std::invalid_argument) {
+void Matrix::assureCols(const Matrix & matrix) const {
     if(cols() != matrix.cols()) {
         throw std::invalid_argument("Matrix got wrong dimension");
     }
 }
 
-void Matrix::assureSize(const Matrix & matrix) const throw(std::invalid_argument) {
+void Matrix::assureSize(const Matrix & matrix) const {
     assureRows(matrix);
     assureCols(matrix);
 }
@@ -121,17 +127,17 @@ Matrix Matrix::everyOperation(const std::function<int(index, index, int)> & oper
     return result;
 }
 
-Matrix Matrix::pairWiseOperation(const Matrix & matrix, const std::function<int(int, int)> & operation) const throw(std::invalid_argument) {
+Matrix Matrix::pairWiseOperation(const Matrix & matrix, const std::function<int(int, int)> & operation) const {
     assureSize(matrix);
     
     return everyOperation([matrix, operation] (index row, index col, int self) { return operation(self, matrix[row][col]); });
 }
 
-Matrix Matrix::operator+ (const Matrix & matrix) const throw(std::invalid_argument) {
+Matrix Matrix::operator+ (const Matrix & matrix) const {
     return pairWiseOperation(matrix, [](int self, int other) { return self + other; });
 }
 
-Matrix Matrix::operator- (const Matrix & matrix) const throw(std::invalid_argument) {
+Matrix Matrix::operator- (const Matrix & matrix) const {
     return pairWiseOperation(matrix, [] (int self, int other) { return self - other; });
 }
 
@@ -143,7 +149,7 @@ Matrix Matrix::operator* (int value) const {
     return everyOperation([value] (int cell) { return value * cell; });
 }
 
-Matrix Matrix::operator* (const Matrix & matrix) const throw(std::invalid_argument) {
+Matrix Matrix::operator* (const Matrix & matrix) const {
     if(cols() != matrix.rows()) {
         throw std::invalid_argument("Matrix got wrong dimension");
     }
@@ -191,7 +197,7 @@ Matrix & Matrix::transpose() {
     return *this;
 }
 
-Matrix::matrix_row & Matrix::operator[] (index i) throw(std::out_of_range) {
+Matrix::matrix_row & Matrix::operator[] (index i) {
     if(i >= rows()) {
         throw std::out_of_range("Index out of bounds");
     }
@@ -199,7 +205,7 @@ Matrix::matrix_row & Matrix::operator[] (index i) throw(std::out_of_range) {
     return mData[i];
 }
 
-const Matrix::matrix_row & Matrix::operator[] (index i) const throw(std::out_of_range) {
+const Matrix::matrix_row & Matrix::operator[] (index i) const {
     if(i >= rows()) {
         throw std::out_of_range("Index out of bounds");
     }
