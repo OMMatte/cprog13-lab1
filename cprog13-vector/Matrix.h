@@ -27,16 +27,16 @@ public:
     
     Matrix & operator= (const Matrix &);
     Matrix & operator= (Matrix && matrix);
-    Matrix operator+ (const Matrix &) const throw(std::invalid_argument);
-    Matrix operator* (const Matrix &) const throw(std::invalid_argument);
+    Matrix operator+ (const Matrix &) const;
+    Matrix operator* (const Matrix &) const;
     Matrix operator* (int) const;
-    Matrix operator- (const Matrix &) const throw(std::invalid_argument);
+    Matrix operator- (const Matrix &) const;
     Matrix operator- () const;
     
     Matrix & transpose();
     
-    matrix_row & operator[] (index i) throw(std::out_of_range);
-    const matrix_row & operator[] (index i) const throw(std::out_of_range);
+    matrix_row & operator[] (index i);
+    const matrix_row & operator[] (index i) const;
     
     std::size_t rows() const;
     std::size_t cols() const;
@@ -49,10 +49,10 @@ private:
     void addRow(matrix_row);
     friend std::istream & operator>> (std::istream &, Matrix &);
     
-    void assureRows(const Matrix &) const throw(std::invalid_argument);
-    void assureCols(const Matrix &) const throw(std::invalid_argument);
-    void assureSize(const Matrix &) const throw(std::invalid_argument);
-    Matrix pairWiseOperation(const Matrix &, const std::function<int(int, int)> &) const throw(std::invalid_argument);
+    void assureRows(const Matrix &) const;
+    void assureCols(const Matrix &) const;
+    void assureSize(const Matrix &) const;
+    Matrix pairWiseOperation(const Matrix &, const std::function<int(int, int)> &) const;
     Matrix everyOperation(const std::function<int(int)> &) const;
     Matrix everyOperation(const std::function<int(index, index, int)> &) const;
 };
