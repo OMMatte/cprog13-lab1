@@ -1,8 +1,8 @@
 #ifndef MATRIX_TEST_H_INCLUDED
 #define MATRIX_TEST_H_INCLUDED
 
-//#include "../../cprog13-vector/Matrix.h"
-#include "Matrix.h"
+#include "../../cprog13-vector/Matrix.h"
+//#include "Matrix.h"
 #include "../cxxtest/cxxtest/TestSuite.h"
 #include <fstream>
 #include <sstream>
@@ -34,12 +34,15 @@ class MatrixTestSuite : public CxxTest::TestSuite
 public:
     void testIndexOperator ( )
     {
-        Matrix m01(0, 3);
-        TS_ASSERT( m01.rows() == 0 && m01.cols() == 0 ); // we think it should be like this
-        Matrix m02(3, 0);
-        TS_ASSERT( m02.rows() == 0 && m02.cols() == 0 ); // we think it should be like this
-        Matrix m03(0, 0);
-        TS_ASSERT( m03.rows() == 0 && m03.cols() == 0 );
+        try {
+            Matrix m01(0, 3);
+            TS_ASSERT( m01.rows() == 0 && m01.cols() == 0 ); // we think it should be like this
+            Matrix m02(3, 0);
+            TS_ASSERT( m02.rows() == 0 && m02.cols() == 0 ); // we think it should be like this
+            Matrix m03(0, 0);
+            TS_ASSERT( m03.rows() == 0 && m03.cols() == 0 );            
+        } catch(std::invalid_argument &) {}
+
         
         Matrix m( 2, 2 );
         TS_ASSERT( m[ 0 ][ 1 ] == 0 );
