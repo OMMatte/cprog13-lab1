@@ -169,11 +169,13 @@ public:
             throw std::runtime_error( "Transpose is not working..." );
         }
         
+//        init_matrix(m2, "  [ -2 3 -4 0 15 ; -1 1 1 -1 1 ; -8 -7 -6 -5 -4 ; 100 99 88 77 -66 ]");
+        m2 = a_matrix_5by4();
         
         Matrix m9 = m2;
         Matrix m10 = m2.transpose();
-        TS_ASSERT(m9.rows() == 4 && m9.cols() == 5);
-        TS_ASSERT(m10.rows() == 5 && m10.cols() == 4);
+//        TS_ASSERT(m9.rows() == 4 && m9.cols() == 5);
+//        TS_ASSERT(m10.rows() == 5 && m10.cols() == 4);
         for(int row = 0; row < m9.rows(); row++){
             for(int col = 0; col < m9.cols(); col++){
                 TS_ASSERT( m9[row][col] == m10[col][row]);
@@ -193,11 +195,33 @@ public:
         Matrix mA1 = Matrix(1);
         TS_ASSERT(mA1.cols() == 1 && mA1.rows() == 1);
         TS_ASSERT(mA1[0][0] == 1);
-
         
+        Matrix mB = mA0 * mA0;
+        TS_ASSERT(mB.cols() == 0 && mB.rows() == 0);
+        mA1[0][0] = -1;
+        mB = mA1 * mA1;
+        TS_ASSERT(mB.cols() == 1 && mB.rows() == 1);
+        TS_ASSERT(mB[0][0] == 1);
         
+        Matrix mA2;
+        init_matrix(mA0, " [ -2 3 -4 0 ; -1 1 1 -1 ; -8 -7 -6 -5 ; 100 99 88 77 ]");
+        init_matrix(mA1, " [ 2 3 4 2 ; 1 -1 1 -1 ; 8 7 -65 -52 ; 1 -1 0 2 ]");
+        init_matrix(mA2, " [ 2 3 4 2 ; 1 -1 1 -1 ; 8 7 -65 -52 ; 1 -1 0 2 ]");
         
+        mB = mA0 + mA1 + mA2;
+        for(int row = 0; row < mA0.rows(); row++){
+            for(int col = 0; col < mA0.cols(); col++){
+                TS_ASSERT(mB[row][col] == mA0[row][col] + mA1[row][col] + mA2[row][col]);
+            }
+        }
         
+        Matrix mA0Copy = mA0;
+        std::cout << mA0;
+        for(int row = 0; row < mA0.rows(); row++){
+            for(int col = 0; col < mA0.cols(); col++){
+                TS_ASSERT(mA0[row][col] == mA0Copy[row][col]);
+            }
+        }
         
         
         // Illegal operations
