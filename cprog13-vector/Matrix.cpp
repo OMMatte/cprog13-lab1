@@ -78,7 +78,7 @@ Matrix::Matrix(Matrix && matrix) : mData(std::move(matrix.mData)), mRows(matrix.
 Matrix::~Matrix() {}
 
 Matrix & Matrix::operator=(const Matrix & matrix) {
-    //TODO: Is this okay way of copying the data?
+    //Copy the data by using vector copy assignment operator.
     mData = matrix.mData;
     mRows = matrix.mRows;
     mCols = matrix.mCols;
@@ -189,7 +189,7 @@ Matrix & Matrix::transpose() {
         }
     }
     
-    //TODO: Is this right?
+    //Copy the data by using vector copy assignment operator.
     mData = newData;
     mRows = COLS;
     mCols = ROWS;
