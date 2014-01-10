@@ -33,7 +33,7 @@ class Matrix
     };
     
     Matrix( );
-    Matrix( std::size_t, std::size_t );
+    Matrix( std::size_t, std::size_t ); //TODO Create with 0 0 etc
     Matrix( const Matrix& );
     Matrix(int size);
     ~Matrix( );

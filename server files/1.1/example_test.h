@@ -16,6 +16,13 @@ class MatrixTestSuite : public CxxTest::TestSuite
         s >> m;
         return m;
     }
+    
+    Matrix a_matrix_5by4() {
+        Matrix m;
+        std::stringstream s("  [ -2 3 -4 0 15 ; -1 1 1 -1 1 ; -8 -7 -6 -5 -4 ; 100 99 88 77 -66 ]");
+        s >> m;
+        return m;
+    }
 
     void init_matrix( Matrix& m, const char* file )
     {
@@ -90,15 +97,22 @@ public:
         
         
         //Aritmethic
-        Matrix m1 = a_matrix_3by2();
+        Matrix m1 = a_matrix_5by4();
         Matrix m2;
         init_matrix(m2, "  [ 0 5 2 ; 1 6 9 ]");
         TS_ASSERT(m2.rows() == 2);
         TS_ASSERT(m2.cols() == 3);
         
+        m2 = a_matrix_5by4();
+        TS_ASSERT(m2.rows() == 4);
+        TS_ASSERT(m2.cols() == 5);
+        
+        
         Matrix m3 = m1 + m2;
+        
 
         Matrix m4 = m1 - m2;
+        
         int scalar = 6;
         Matrix m5 = m1 * 6;
         Matrix m14;
@@ -108,6 +122,7 @@ public:
         } catch (const std::out_of_range& oor) {
             throw std::runtime_error( "Something wrong with * operator with int to the left." );
         }
+        
         
         TS_ASSERT (m14.rows() == m1.rows() && m14.cols() == m1.cols());
         Matrix m8 = -m1;
@@ -130,29 +145,54 @@ public:
                 TS_ASSERT ( m13[row][col] == m3[row][col]);
             }
         }
-       
+        
+        
         
         Matrix m6;
         init_matrix(m6, "  [ 2 0 ; 5 4 ; 7 9 ]");
-        Matrix m7 = m2 * m6;
+        Matrix m6b;
+        init_matrix(m6b, "  [ 0 5 2 ; 1 6 9 ]");
+        Matrix m7 = m6b * m6;
         for(int row = 0; row < m7.rows(); row++){
             for(int col = 0; col < m7.cols(); col++){
                 int sum = 0;
-                for(int i = 0; i < m2.cols(); i++){
-                    sum += (m2[row][i] * m6[i][col]);
+                for(int i = 0; i < m6b.cols(); i++){
+                    sum += (m6b[row][i] * m6[i][col]);
                 }
                 TS_ASSERT ( m7[row][col] == sum );
             }
         }
         
+        try {
+            m2.transpose().transpose(); // 9 failing. In combination with assignment operator 
+        } catch (const std::out_of_range& oor) {
+            throw std::runtime_error( "Transpose is not working..." );
+        }
+        
+        
         Matrix m9 = m2;
         Matrix m10 = m2.transpose();
+        TS_ASSERT(m9.rows() == 4 && m9.cols() == 5);
+        TS_ASSERT(m10.rows() == 5 && m10.cols() == 4);
         for(int row = 0; row < m9.rows(); row++){
             for(int col = 0; col < m9.cols(); col++){
                 TS_ASSERT( m9[row][col] == m10[col][row]);
             }
         }
         
+       
+        
+        Matrix mA0 = Matrix(0);
+        TS_ASSERT(mA0.cols() == 0 && mA0.rows() == 0);
+        try{
+            int test = mA0[0][0];
+            throw std::runtime_error( "We can access elements out of range." );
+        } catch (const std::out_of_range& oor) {
+            //All good!
+        }
+        Matrix mA1 = Matrix(1);
+        TS_ASSERT(mA1.cols() == 1 && mA1.rows() == 1);
+        TS_ASSERT(mA1[0][0] == 1);
 
         
         
