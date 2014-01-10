@@ -19,9 +19,9 @@ public:
     
     Matrix();
     Matrix(std::size_t, std::size_t);
+    Matrix(std::size_t);
     Matrix(const Matrix &);
     Matrix(Matrix &&);
-    Matrix(int size);
     ~Matrix();
     
     Matrix & operator= (const Matrix &);

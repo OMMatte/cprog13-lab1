@@ -30,6 +30,7 @@ Matrix operator* (int value, const Matrix & matrix) {
 }
 
 Matrix::Matrix() : Matrix(0, 0) {}
+Matrix::Matrix(std::size_t size) : Matrix(size, size) {}
 Matrix::Matrix(std::size_t rows, std::size_t cols) : mData(Vector<matrix_row>(rows, matrix_row(cols))), mRows(rows), mCols(cols) {}
 
 Matrix::Matrix(const Matrix & matrix) : mData(matrix.mData), mRows(matrix.mRows), mCols(matrix.mCols) {}
@@ -107,12 +108,12 @@ Matrix Matrix::operator* (const Matrix & matrix) const throw(std::invalid_argume
         throw std::invalid_argument("Matrix got wrong dimension");
     }
     
-    const size_t length = matrix.rows();
+    const std::size_t LENGTH = matrix.rows();
 
-    return everyOperation([this, length, matrix] (index row, index col, int) {
+    return everyOperation([this, LENGTH, matrix] (index row, index col, int) {
         int result = 0;
         
-        for(index i = 0; i < length; i++) {
+        for(index i = 0; i < LENGTH; i++) {
             result += mData[row][i] * matrix[i][col];
         }
         
@@ -123,8 +124,8 @@ Matrix Matrix::operator* (const Matrix & matrix) const throw(std::invalid_argume
 Matrix & Matrix::transpose() {
     auto newData = Vector<matrix_row>(cols(), matrix_row(rows()));
     
-    const size_t ROWS = rows();
-    const size_t COLS = cols();
+    const std::size_t ROWS = rows();
+    const std::size_t COLS = cols();
     
     for(index row = 0; row < ROWS; row++) {
         for(index col = 0; col < COLS; col++) {
@@ -156,10 +157,10 @@ const Matrix::matrix_row & Matrix::operator[] (index i) const throw(std::invalid
     return mData[i];
 }
 
-size_t Matrix::rows() const {
+std::size_t Matrix::rows() const {
     return mRows;
 }
 
-size_t Matrix::cols() const {
+std::size_t Matrix::cols() const {
     return mCols;
 }
