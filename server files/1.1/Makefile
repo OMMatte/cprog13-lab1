@@ -1,5 +1,5 @@
 # Change these
-cxxtestpath = /info/cprog11/cxxtest/
+cxxtestpath = ../cxxtest/
 testcode    = example_test.h
 
 testcode.cpp: $(testcode)
