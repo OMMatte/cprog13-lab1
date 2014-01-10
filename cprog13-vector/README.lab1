@@ -1,0 +1,317 @@
+/////////////////////////////////////////////////////////////////
+//
+// Personuppgifter (namn, pnr, epost) på dem som gjort labben
+//
+
+Lucas Wiener, 9111234259, lwiener@kth.se
+Mathias Lindblom, 8906050011, mathlin@kth.se
+
+/////////////////////////////////////////////////////////////////
+//
+// 1.1
+//
+// vad betyder \$* i en makefile? 
+
+Tecknet \ använder man för att stycka upp kod på flera rader, så i detta fall gör det ingenting.
+Vanligtvis använder man tecknet sist i rader för att skapa ett kommando som är på flera rader.
+I en implicit regel (med %) så är $* det som matchades av %.
+
+// vad gör -Wall och -g ?
+
+Säger åt kompilatorn att rapportera alla varningar och att generera debuginformation.
+
+/////////////////////////////////////////////////////////////////
+//
+// 1.2 a)
+// 
+// int powerof(int x, int y) {
+//     int res = 1;
+//     for (int i = 0; i < y; i++); {
+//         res *= x;
+//     }
+//     return res;
+// }
+// 
+// int main() {
+//     int x = 10;
+//     int y = 3;
+// 
+//     int res = powerof(x, y);
+// 
+//     std::cout << x << " upphöjt till " << y << " är " << res << std::endl;
+// 
+//     float z = 0.29;
+//     int w = (int) (z * x * x);
+//     if (z * x * x == 29)
+//         std::cout << z << "*" << x * x << " är 29" << std::endl;
+//     else
+//         std::cout << z << "*" << x * x << " är inte 29" << std::endl;           
+// }
+// 
+// Varför blir värdet på variabeln w inte det man tror (0.29*100)? 
+
+Floats arbetar ej med exakta värden, vilket betyder att z skulle kunna vara
+0.2899999... istället för exakt 0.2900000... Då när man gör beräkningen z*x*x så
+kommer det då få värdet 28.999999. Decimalerna försvinner när värdet görs om till en
+integer, så det slutgiltiga värdet blir då 28.
+
+// Hur många varv körs for-loopen i funktionen powerof? 
+
+For-loopen kommer köras y gånger. Notera dock att loopens kropp är tom,
+vilket betyder att res *= x endast kommer köras en gång (vilket inte är loopens kropp).
+
+// 1.2 b)
+//
+// int must_follow_a(char * start, int length, char a, char b) {
+//     int nr = 0;
+//     for (int i = 0; i < length; i++, ++start) {
+//         if (*start == a && *(start + 1) == b) // maintainers note: DANGER!
+//             nr += 1;
+//     }
+//     return nr;
+// }
+// 
+// Dina tre testfall
+
+void test2( void ) {
+    char test[] = {'b', 'a', 'n', 'a', 'n' };
+    int result = must_follow_a(test, 4, 'a', 'n');
+    TS_ASSERT_EQUALS(result, 0);
+}
+
+void test3( void ) {
+    char test[] = { 'H', 'A', 'N', 'A', ' ', 'B', 'A', 'N', 'A', 'N', 'A', 'N' };
+    int result = must_follow_a(test, strlen(test), 'A', 'N');
+    TS_ASSERT_EQUALS(result, 4);
+}
+
+void test4( void ) {
+    char test[] = { 'h', 'a', 'b', 'A', 'n', 'A', ' ', 'n', 'a', 'b', 'a', 'N' };
+    int result = must_follow_a(test, strlen(test), 'n', 'A');
+    TS_ASSERT_EQUALS(result, 1);
+}
+
+// Varför är det så viktigt att testa randvillkoren?
+
+Det är viktigt eftersom det är där funktionen har en bugg. Funktionen
+tittar på ett extra tecken efter det givna datats längd, så det är 
+om testdatat slutar på a men är följt av ett b, så kommer funktionen
+att returnera fel värde.
+
+/////////////////////////////////////////////////////////////////
+//
+// 1.3 
+// 
+// Bifoga källkoden till din version av A.cpp
+
+#include <iostream>
+
+class A {
+public:
+    A() {
+        std::cout << "The default contructor" << std::endl;
+    }
+    
+    A(const A & ref) {
+        std::cout << "The copy contructor" << std::endl;
+    }
+    
+    ~A() {
+        std::cout << "The destructor" << std::endl;
+    }
+    
+    A(char * s) {
+        std::cout << "Some other constructor " << s << std::endl;
+    }
+    
+    A & operator=(const A & s) {
+        std::cout << "The assignment operator" << std::endl;
+        return *this;
+    }
+};
+
+void no_ref(A a) {}
+void with_ref(const A & a) {}
+
+int main()
+{
+    std::cout << "test 1" << std::endl;
+    A a("my name is a");
+    
+    std::cout << "test 2" << std::endl;
+    A b = a;         // vad är skillnaden
+    
+    std::cout << "test 3" << std::endl;
+    A c(a);          // mellan dessa
+    
+    std::cout << "test 4" << std::endl;
+    A d;             // tre tekniker?
+    
+    std::cout << "test 5" << std::endl;
+    d = a;
+    
+    std::cout << "test 6" << std::endl;
+    no_ref(a);       // Bildas temporära objekt?
+    
+    std::cout << "test 7" << std::endl;
+    with_ref(a);     // Bildas temporära objekt?
+    
+    std::cout << "test 8" << std::endl;
+    A *aa = new A[5];
+    
+    std::cout << "test 9" << std::endl;
+    delete aa;       // Vad kommer att hända?
+    
+    return 0;
+}
+
+
+
+// Vad skriver ditt program ut, var förberedd att förklara varför. 
+
+test 1
+Some other constructor my name is a
+test 2
+The copy contructor
+test 3
+The copy contructor
+test 4
+The default contructor
+test 5
+The assignment operator
+test 6
+The copy contructor
+The destructor
+test 7
+test 8
+The default contructor
+The default contructor
+The default contructor
+The default contructor
+The default contructor
+test 9
+The destructor
+cprog13-vector(85819) malloc: *** error for object 0x1001000e8: pointer being freed was not allocated
+*** set a breakpoint in malloc_error_break to debug
+
+// När frigörs objekten?  
+
+När de är out-of-scope, förutom för de dynamiskt allokerade objekten.
+
+// När skapas temporära objekt?
+
+När funktioners parametrar är copy-by-value.
+
+//   A b = a;         // vad är skillnaden
+//   A c(a);          // mellan dessa
+//   A d;             // tre tekniker?
+
+De två första kommer använda copy constructor. Den sista kommer använda
+default constructor. De två första skapas utifrån objekt a.
+
+//   no_ref(a);       // Bildas temporära objekt?
+
+Ja.
+
+//   with_ref(a);     // Bildas temporära objekt?
+
+Nej.
+
+//   delete aa;       // Vad kommer att hända
+
+Programmet kommer att krascha, eftersom att göra delete på en array
+är odefinierat beteende. delete[] ska användas istället.
+
+/////////////////////////////////////////////////////////////////
+//
+// struct Data {
+//     int x, y, z;
+// };  
+// 
+// Data ** foo(Data ** v, int x) {
+//     for (int i = 0; i < x; i++)
+//         //if (v[i] != 0)
+//             v[i] = new Data;
+//     return v;
+// }
+// 
+// int main () {
+//     const int size = 5;
+//     Data ** v = new Data * [size];
+//     Data ** p = foo(v, size);
+//     delete [] p;
+// }
+
+// Hur ser valgrinds felmeddelande ut?  
+
+==92627== Conditional jump or move depends on uninitialised value(s)
+==92627==    at 0x100000E82: foo(Data**, int) (Data.cpp:7)
+==92627==    by 0x100000EFF: main (Data.cpp:15)
+
+// Blir det någon skillnad i hur mycket minne som läcker när man
+// kommenterar if-satsen?
+
+==92627== LEAK SUMMARY:
+==92627==    definitely lost: 8,664 bytes in 15 blocks
+==92627==    indirectly lost: 1,168 bytes in 5 blocks
+==92627==      possibly lost: 4,837 bytes in 56 blocks
+==92627==    still reachable: 43,831 bytes in 273 blocks
+==92627==         suppressed: 0 bytes in 0 blocks
+
+mot
+
+==92652== LEAK SUMMARY:
+==92652==    definitely lost: 8,664 bytes in 15 blocks
+==92652==    indirectly lost: 1,228 bytes in 10 blocks
+==92652==      possibly lost: 4,837 bytes in 56 blocks
+==92652==    still reachable: 43,831 bytes in 273 blocks
+==92652==         suppressed: 0 bytes in 0 blocks
+
+så ja.
+
+// Borde det ha blivit någon skillnad?
+
+Ja, eftersom vi då skapar 5 Data objekt i arrayen, vilket inte
+görs då if-satsen är aktiv. Eftersom en Data är 12 bytes, så kommer
+andra versionen att läcka 5*12=60 bytes mer.
+
+// Varför läcker programmet fortfarande minne?
+
+För att med if-satsen bortkommenterad så skapas 5 objekt i arrayen
+som aldrig frigörs. Vi måste gå igenom hela arrayen och frigöra objekten
+som skapas och sedan frigöra arrayen.
+
+/////////////////////////////////////////////////////////////////
+//
+// 1.4
+//
+// Generellt är det ofta en god idé att låta konstruktorer som
+// tar ett argument deklareras som explicit. Varför? Ange ett
+// exempel där det annars kan bli dumt.
+
+För att annars kan C++ automatiskt skapa ett objekt med denna konstruktor
+när man angett ett värde av rätt typ till en funktion som tar objektet som parameter.
+
+class String {
+	char *buffer;
+
+	String(int size) {
+		buffer = new char[size];
+	}
+}
+
+void print(String s) {
+	std::cout << s;
+}
+
+print(3); // <- här kan man ju gärna tro att den ska printa ut "3", men detta händer inte pga ovan nämnda problem.
+
+// operatorn[] måste vara en konstant medlemsfunktion i vissa
+// fall. När och varför? Hur kopierar man vektorn?
+
+Den måste vara konstant då den endast returnerar värdet av elementet på det indexet,
+för annars kommer denna funktionalitet ej kunna användas av vektorer som är konstanta.
+Anledningen till att den andra operatorn [] (settern) inte kan ha const är för att 
+man då returnerar en referens, som gör att användaren kan ändra vektorn.
+
+Man kan kopiera vektorn genom att använda vår = operator eller copy-konstruktor.

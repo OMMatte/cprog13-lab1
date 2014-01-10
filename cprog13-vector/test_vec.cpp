@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stdexcept>
-#include "vector.cpp"     // inkludera din headerfil här
+#include "kth_cprog_vektor.cpp"     // inkludera din headerfil här
 #include <assert.h>
 
 int main()
@@ -99,6 +99,8 @@ int main()
     assert(c[8] == 10);
     c.insert(0, 11);
     assert(c[0] == 11);
-        
+    
+    std::cout << "Success" << std::endl;
+    
     return 0;
 }

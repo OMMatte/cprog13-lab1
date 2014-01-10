@@ -27,7 +27,7 @@ public:
     /* Default constructor */
     Vector();
     
-    /* Size constructor */
+    /* Size constructor, set to explicit to prevent implicit conversions. If a function foo takes a vector parameter, the function cannot be called as foo(1). The user might think a vector with element 1 is constructed, when it is instead an empty vector of size 1 is constructed. */
     explicit Vector(const size_t size);
     
     /* Size value constructor */
@@ -39,8 +39,8 @@ public:
     /* Move constructor */
     Vector(Vector && v);
     
-    /* Assign operator = */
-    Vector(const std::initializer_list<T> data);
+    /* Intializer list Constructor = */
+    Vector(const std::initializer_list<T> data); //TODO: why not reference?
     
     ~Vector();
     
@@ -243,7 +243,7 @@ void Vector<T>::erase(const size_t index) {
     }
     
     T *start = mValues.get();
-
+    
     std::copy(start + index + 1, start + mSize, start + index);
     
     mSize--;
